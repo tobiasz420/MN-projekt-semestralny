@@ -87,7 +87,6 @@ class ImageDataset(torch.utils.data.Dataset):
             image = self.transform(image)
 
         return image, label
-
 def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_rate=0.001):
     model = models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, num_classes)
