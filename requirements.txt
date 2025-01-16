@@ -1,0 +1,10 @@
+Lista bibliotek potrzebnych do uruchomienia projektu:
+
+makefile
+Kopiuj
+Edytuj
+torch==<wersja>
+torchvision==<wersja>
+tqdm
+Pillow
+matplotlib
