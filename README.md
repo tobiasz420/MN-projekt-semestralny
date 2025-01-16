@@ -3,6 +3,9 @@
 ## O projekcie
 Zebraliśmy zdjęcia oraz informacje o obiektach na nich widocznych, czyli współrzędne przedstawiające położenie obiektów. Podczas oznaczania skupialiśmy się na dwóch typach obiektów: ludziach i samochodach. Ostatecznie modele zostały zaprojektowane tak, by rozpoznawały wyłącznie ludzi. Zebrane dane posłużyły do trenowania modeli, które miały za zadanie wykrywać wybrany obiekt na zdjęciach.
 
+##Folder dataset
+https://drive.google.com/drive/folders/1CfsDNWTYKutA8C3JQ_I8Llb3juDpfbUE
+
 ## Struktura folderu dataset
 dataset/   
 
