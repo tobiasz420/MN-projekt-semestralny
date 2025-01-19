@@ -96,7 +96,7 @@ class ImageDataset(torch.utils.data.Dataset):
         return image, label
 ```
 ## Działanie klasy
-"__init__" - Inicjalizuje ścieżki do folderów, gdzie znajdują się obrazy oraz etykiety.
+\\__init__ - Inicjalizuje ścieżki do folderów, gdzie znajdują się obrazy oraz etykiety.
 
 "__len__" - Zwraca liczbę obrazów w zbiorze.
 
