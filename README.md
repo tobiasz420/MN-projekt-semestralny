@@ -4,11 +4,50 @@
 Zebraliśmy zdjęcia oraz informacje o obiektach na nich widocznych, czyli współrzędne przedstawiające położenie obiektów. Podczas oznaczania skupialiśmy się na dwóch typach obiektów: ludziach i samochodach. Ostatecznie modele zostały zaprojektowane tak, by rozpoznawały wyłącznie ludzi. Zebrane dane posłużyły do trenowania modeli, które miały za zadanie wykrywać wybrany obiekt na zdjęciach.
 
 ## Folder dataset
-https://drive.google.com/drive/folders/1Q753o4HSwhU-J6FX0UaYMG7VkS2Qu8Vp?usp=sharing
+[Link do folderu](https://drive.google.com/drive/folders/1Q753o4HSwhU-J6FX0UaYMG7VkS2Qu8Vp?usp=sharing)
 
 ## Struktura folderu dataset
-dataset/ ├── images/ │ ├── train/ │ │ ├── image1.png │ │ ├── image2.png │ │ └── ... │ ├── val/ │ ├── image341.png │ ├── image342.png │ └── ... ├── labels/ ├── train/ │ ├── image1.txt │ ├── image2.txt │ └── ... ├── val/ ├── image341.txt ├── image342.txt └── ...  
+dataset/   
 
+│   
+
+├── images/   
+
+│   ├── train/   
+
+│   │   ├── image1.png   
+
+│   │   ├── image2.png   
+
+│   │   └── ...   
+
+│   ├── val/   
+
+│       ├── image341.png   
+
+│       ├── image342.png   
+
+│       └── ...   
+
+│   
+
+├── labels/   
+
+    ├── train/   
+
+    │   ├── image1.txt   
+
+    │   ├── image2.txt   
+
+    │   └── ...   
+
+    ├── val/   
+
+        ├── image341.txt   
+
+        ├── image342.txt   
+
+        └── ...
 ## Użyte biblioteki:
 PyTorch – Umożliwia implementację modeli sieci neuronowych, przeprowadzanie treningu oraz wykonywanie obliczeń numerycznych na danych.
 
