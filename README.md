@@ -103,9 +103,12 @@ class ImageDataset(torch.utils.data.Dataset):
 \_\_getitem\_\_ - Wczytuję obraz z podanej ścieżki, konwertuje go do RBB, wczytuję odpowiadającą obrazowi etykietę z rozszerzeniem .txt oraz zwraca przetworzony obraz wraz z odpowiadającą etykietą.
 
 # Transformacja danych 
-transform = transforms.Compose([ 
+transform = transforms.Compose([])
+
 transforms.Resize((224, 224)), - Zmiana rozmiaru obrazu na 224 x 224 
+
 transforms.ToTensor(), - Konwersja obrazu do tensorów 
+
 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) - Normalizacja obrazu 
 
 # Ładowanie danych 
