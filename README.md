@@ -123,17 +123,17 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
     model = models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, num_classes)
 ```
-rain_loader: Obiekt DataLoader zawierający dane treningowe. 
+rain_loader - Obiekt DataLoader zawierający dane treningowe. 
 
-val_loader: Obiekt DataLoader zawierający  dane walidacyjne. 
+val_loader - Obiekt DataLoader zawierający  dane walidacyjne. 
 
-num_classes: Liczba klas, które model ma rozpoznawać. 
+num_classes - Liczba klas, które model ma rozpoznawać. 
 
-num_epochs:Liczba epok, czyli ile razy model ma przejść przez cały zbiór treningowy. 
+num_epochs - Liczba epok, czyli ile razy model ma przejść przez cały zbiór treningowy. 
 
-learning_rate: Szybkość uczenia się (0.001). 
+learning_rate - Szybkość uczenia się (0.001). 
 
-model = models.resnet18(weights='IMAGENET1K_V1'): Wybór modelu ResNet18 wstępnie wytrenowany.
+model = models.resnet18(weights='IMAGENET1K_V1') - Wybór modelu ResNet18 wstępnie wytrenowany.
 
 ## Pętla treningowa
 ```python
