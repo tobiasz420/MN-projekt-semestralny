@@ -43,11 +43,11 @@ dataset/
 
   ├── val/   
 
-      ├── image341.txt   
+    ├── image341.txt   
 
-      ├── image342.txt   
+    ├── image342.txt   
 
-      └── ...
+    └── ...
 ## Użyte biblioteki:
 PyTorch – Umożliwia implementację modeli sieci neuronowych, przeprowadzanie treningu oraz wykonywanie obliczeń numerycznych na danych.
 
