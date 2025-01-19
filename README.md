@@ -63,21 +63,15 @@ Os – Umożliwia operacje na plikach i katalogach, takie jak odnajdywanie plik�
 
 NumPy – Biblioteka do obliczeń numerycznych, umożliwiająca m.in. przetwarzanie danych, normalizację obrazów oraz konwersję między różnymi formatami danych.
 
-## Kod programu:
+## Wykorzystane modele:
+-resnet34 (przetrenowany)
+-resnet50 (przetrenowany)
+-vgg16 (przetrenowany)
+-densenet (przetrenowany)
+-efiicientnet_b0 (przetrenowany)
+-resnet18 
+## Kod klasy:
 ```python
-import os
-import torch
-from torch.utils.data import DataLoader
-from torchvision import models, transforms
-from torch import nn, optim
-from PIL import Image
-from tqdm import tqdm
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-
-#Klasa do ładowania i przetwarzania zbioru danych obrazów
-
 class ImageDataset(torch.utils.data.Dataset):
     def __init__(self, image_dir, label_dir=None, transform=None):
         self.image_dir = image_dir
@@ -86,7 +80,6 @@ class ImageDataset(torch.utils.data.Dataset):
         self.transform = transform
 
     def __len__(self):
-	#Zwraca liczbę obrazów w zbiorze danych
         return len(self.images)
 
     def __getitem__(self, index):
@@ -103,29 +96,49 @@ class ImageDataset(torch.utils.data.Dataset):
                     label = labels[0]
             else:
                 print(f"Brak etykiety dla obrazu {self.images[index]}")
-	
-	#Zastosowanie transformacji
+
         if self.transform:
             image = self.transform(image)
 
         return image, label
-#Funkcja do trenowania modelu ResNet18
+```
+## Działanie klasy
+__init__ - Inicjalizuje ścieżki do folderów, gdzie znajdują się obrazy oraz etykiety.
+__len__ - Zwraca liczbę obrazów w zbiorze.
+__getitem__ - Wczytuję obraz z podanej ścieżki, konwertuje go do RBB, wczytuję odpowiadającą obrazowi etykietę z rozszerzeniem .txt oraz zwraca przetworzony obraz wraz z odpowiadającą etykietą.
+
+# Transformacja danych 
+transform = transforms.Compose([ 
+transforms.Resize((224, 224)), - Zmiana rozmiaru obrazu na 224 x 224 
+transforms.ToTensor(), - Konwersja obrazu do tensorów 
+transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) - Normalizacja obrazu 
+
+# Ładowanie danych 
+
+train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True) - Przetwarza zbiór danych treningowych, batch_size = 2 oznacza że każda partia składa się z dwóch obrazów,  shuffle = True powoduje losowe mieszanie próbek w każdej z epok. 
+val_loader = DataLoader(val_dataset, batch_size=2, shuffle=False) - Przetwarza zbiór walidacyjny.
+
+## Funkcja train_model
+```python
 def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_rate=0.001):
     model = models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, num_classes)
+```
+rain_loader: Obiekt DataLoader zawierający dane treningowe. 
+val_loader: Obiekt DataLoader zawierający  dane walidacyjne. 
+num_classes: Liczba klas, które model ma rozpoznawać. 
+num_epochs:Liczba epok, czyli ile razy model ma przejść przez cały zbiór treningowy. 
+learning_rate: Szybkość uczenia się (0.001). 
+model = models.resnet18(weights='IMAGENET1K_V1'): Wybór modelu ResNet18 wstępnie wytrenowany.
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = model.to(device)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-
+## Pętla treningowa
+```python
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
         correct_train = 0
         total_train = 0
 	
-	#Pętla po partiach danych
         loop = tqdm(train_loader, leave=True)
         for images, labels in loop:
             images, labels = images.to(device), labels.clone().detach().to(device)
@@ -135,12 +148,10 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
-
-            running_loss += loss.item()
-            _, predicted = torch.max(outputs, 1)
-            total_train += labels.size(0)
-            correct_train += (predicted == labels).sum().item()
-
+```
+W tej pętli pełne przejście przez zbiór treningowy odpowiada za pełną epokę. Model ustawiany jest w tryb treningowy (resetowane są statystyki dla bieżącej epoki). Następnie następują kluczowe etapy treningu takie jak: zerowanie gradientów czy też porównywanie przewidywanych wyników z etykietami.
+Po wyjściu z pętli treningowej obliczane oraz drukowane są parametry pozwalające ocenić skuteczność działania modelu. 
+```python
             train_accuracy = 100 * correct_train / total_train
             loop.set_description(f"Epoka [{epoch+1}/{num_epochs}]")
             loop.set_postfix(loss=loss.item(), acc=train_accuracy)
@@ -150,7 +161,6 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
         print(f"  Dokładność (train): {train_accuracy:.2f}%")
         print("---")
 
-    #Walidacja modelu
     model.eval()
     correct = 0
     total = 0
@@ -163,12 +173,14 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
             correct += (predicted == labels).sum().item()
 
     accuracy = 100 * correct / total
-    print("\n=== Walidacja trenowanego modelu ===")
-    print(f"Dokładność na zbiorze walidacyjnym: {accuracy:.2f}%\n")
+```
+Dokładność treningowa obliczana jest w następujący sposób:
+train_accuracy = 100 * correct_train / total_train 
+Natomiast dokładność walidacyjna:
+accuracy = 100 * correct / total
 
-    return model
-
-#Funkcja do wizualizacji obrazów z przewidywaniami, etykietami i polami ograniczającymi
+## Funkcja plot_image
+```python
 def plot_image(images, predictions, labels, confidences, class_names, label_files):
     fig, axs = plt.subplots(1, len(images), figsize=(10, 5))
     for i, ax in enumerate(axs):
@@ -210,8 +222,11 @@ def plot_image(images, predictions, labels, confidences, class_names, label_file
                         print(f"Błąd w odczycie etykiety: {e}")
     plt.tight_layout()
     plt.show()
+```
+Zadaniem funkcji jest wyświetlanie obrazów wraz z ich predykcjami. Dodatkowo rysuję ramkę wokół rozpoznanego obiektu. Ramki są rysowane gdy predykcja programu jest zgodna z rzeczywistymi etykietami.
 
-#Funkcja walidująca model i wyświetlająca poprawne przewidywania
+## Funkcja validate_and_display
+```python
 def validate_and_display(val_loader, model, class_names):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
@@ -245,13 +260,20 @@ def validate_and_display(val_loader, model, class_names):
         plot_image(images, predictions, labels, confidences[:2], class_names, label_files[:2])
     else:
         print("Nie znaleziono wystarczającej liczby poprawnych przykładów.")
+```
+Funkcja waliduje wytrenowany model, drukuję dwa zdjęcia w których model poprawnie sklasyfikował obiekty, możliwe jest to dzięki porównywaniu predykcji z rzeczywistymi etykietami.
 
-#Funkcja do walidacji wielu modeli i porównania ich wyników
+## Funkcja validate_model
+```python
 def validate_model(val_loader, model_names, num_classes):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     results = []
     class_names = ["Human", "Car"]
-
+```
+val_loader - Obiekt zawierający zbiór walidacyjny
+model_names - Jest to lista nazw modeli które będą ocenione
+results = [] - Tworzona jest pusta lista której zadaniem jest przechowywanie dokładności modeli.
+```python
     for model_name in model_names:
         print(f"\n=== Walidacja modelu {model_name} ===")
         if model_name == "resnet34":
@@ -279,7 +301,6 @@ def validate_model(val_loader, model_names, num_classes):
         correct = 0
         total = 0
 
-	#Walidacja na zbiorze walidacyjnym
         with torch.no_grad():
             for images, labels in val_loader:
                 images, labels = images.to(device), labels.clone().detach().to(device)
@@ -287,56 +308,7 @@ def validate_model(val_loader, model_names, num_classes):
                 _, predicted = torch.max(outputs, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
-
-        accuracy = 100 * correct / total
-        results.append({"model_name": model_name, "accuracy": accuracy})
-
-        print(f"Model: {model_name}")
-        print(f"  Dokładność: {accuracy:.2f}%")
-        print("---")
-
-    return results
-
-if __name__ == "__main__":
-    base_path = '/content/drive/MyDrive/Colab Notebooks/dataset'
-    image_train_path = os.path.join(base_path, 'images', 'train')
-    image_val_path = os.path.join(base_path, 'images', 'val')
-    label_train_path = os.path.join(base_path, 'labels', 'train')
-    label_val_path = os.path.join(base_path, 'labels', 'val')
-
-    #Definicja transformacji dla obrazów
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
-
-    train_dataset = ImageDataset(image_train_path, label_train_path, transform)
-    val_dataset = ImageDataset(image_val_path, label_val_path, transform)
-
-    train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=2, shuffle=False)
-
-    print(f'Liczba obrazów treningowych: {len(train_dataset)}')
-    print(f'Liczba obrazów walidacyjnych: {len(val_dataset)}')
-
-    print("\nWalidacja modeli przetrenowanych")
-    model_names = ["resnet34", "resnet50", "vgg16", "densenet", "efficientnet_b0"]
-    results = validate_model(val_loader, model_names, num_classes=2)
-
-    #Podsumowanie wyników walidacji różnych modeli
-    print("\n=== Podsumowanie wyników ===")
-    for result in results:
-        print(f"Model: {result['model_name']}")
-        print(f"  Dokładność: {result['accuracy']:.2f}%")
-        print("---")
-
-    #Trenowanie i walidacja modelu ResNet18
-    print("\nTrenowanie i walidacja modelu\n")
-    print("=== Trening modelu ResNet18 ===")
-    trained_model = train_model(train_loader, val_loader, num_classes=2, num_epochs=3)
-    
-    #Wizualizacja poprawnych predykcji modelu po treningu
-    class_names = ["Human", "Car"]
-    validate_and_display(val_loader, trained_model, class_names)
 ```
+for model_name in model names - Pętla na podstawie nazwy modelu wczytuję odpowiedni przetrenowany model.
+model.eval() - Przełączanie modelu w tryb walidacji.
+Wewnątrz bloku  with torch.no_grad() znajduję się pętla która służy do walidacji modelu na zestawie danych. Blok torch.no_grad() wyłącza obliczanie gradientów, w skutku czego operacje są szybsze. Pętla przetwarza dane z val_loader, gdzie pobierane są partie obrazów oraz odpowiadające im etykiety. Następnie model dokonuje predykcji dla obrazów z bieżącej partii, po czym wyniki są analizowane w celu określenia czy model poprawnie rozpoznał oczekiwany obiekt.
