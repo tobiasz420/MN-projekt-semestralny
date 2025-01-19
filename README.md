@@ -52,11 +52,17 @@ NumPy – Biblioteka do obliczeń numerycznych, umożliwiająca m.in. przetwarza
 
 ## Wykorzystane modele:
 -resnet34 (przetrenowany)
+
 -resnet50 (przetrenowany)
+
 -vgg16 (przetrenowany)
+
 -densenet (przetrenowany)
+
 -efiicientnet_b0 (przetrenowany)
+
 -resnet18 
+
 ## Kod klasy:
 ```python
 class ImageDataset(torch.utils.data.Dataset):
@@ -91,7 +97,9 @@ class ImageDataset(torch.utils.data.Dataset):
 ```
 ## Działanie klasy
 __init__ - Inicjalizuje ścieżki do folderów, gdzie znajdują się obrazy oraz etykiety.
+
 __len__ - Zwraca liczbę obrazów w zbiorze.
+
 __getitem__ - Wczytuję obraz z podanej ścieżki, konwertuje go do RBB, wczytuję odpowiadającą obrazowi etykietę z rozszerzeniem .txt oraz zwraca przetworzony obraz wraz z odpowiadającą etykietą.
 
 # Transformacja danych 
@@ -103,6 +111,7 @@ transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) - No
 # Ładowanie danych 
 
 train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True) - Przetwarza zbiór danych treningowych, batch_size = 2 oznacza że każda partia składa się z dwóch obrazów,  shuffle = True powoduje losowe mieszanie próbek w każdej z epok. 
+
 val_loader = DataLoader(val_dataset, batch_size=2, shuffle=False) - Przetwarza zbiór walidacyjny.
 
 ## Funkcja train_model
@@ -112,10 +121,15 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
     model.fc = nn.Linear(model.fc.in_features, num_classes)
 ```
 rain_loader: Obiekt DataLoader zawierający dane treningowe. 
+
 val_loader: Obiekt DataLoader zawierający  dane walidacyjne. 
+
 num_classes: Liczba klas, które model ma rozpoznawać. 
+
 num_epochs:Liczba epok, czyli ile razy model ma przejść przez cały zbiór treningowy. 
+
 learning_rate: Szybkość uczenia się (0.001). 
+
 model = models.resnet18(weights='IMAGENET1K_V1'): Wybór modelu ResNet18 wstępnie wytrenowany.
 
 ## Pętla treningowa
@@ -137,6 +151,7 @@ model = models.resnet18(weights='IMAGENET1K_V1'): Wybór modelu ResNet18 wstępn
             optimizer.step()
 ```
 W tej pętli pełne przejście przez zbiór treningowy odpowiada za pełną epokę. Model ustawiany jest w tryb treningowy (resetowane są statystyki dla bieżącej epoki). Następnie następują kluczowe etapy treningu takie jak: zerowanie gradientów czy też porównywanie przewidywanych wyników z etykietami.
+
 Po wyjściu z pętli treningowej obliczane oraz drukowane są parametry pozwalające ocenić skuteczność działania modelu. 
 ```python
             train_accuracy = 100 * correct_train / total_train
@@ -162,8 +177,11 @@ Po wyjściu z pętli treningowej obliczane oraz drukowane są parametry pozwalaj
     accuracy = 100 * correct / total
 ```
 Dokładność treningowa obliczana jest w następujący sposób:
+
 train_accuracy = 100 * correct_train / total_train 
+
 Natomiast dokładność walidacyjna:
+
 accuracy = 100 * correct / total
 
 ## Funkcja plot_image
@@ -258,8 +276,11 @@ def validate_model(val_loader, model_names, num_classes):
     class_names = ["Human", "Car"]
 ```
 val_loader - Obiekt zawierający zbiór walidacyjny
+
 model_names - Jest to lista nazw modeli które będą ocenione
+
 results = [] - Tworzona jest pusta lista której zadaniem jest przechowywanie dokładności modeli.
+
 ```python
     for model_name in model_names:
         print(f"\n=== Walidacja modelu {model_name} ===")
@@ -295,8 +316,9 @@ results = [] - Tworzona jest pusta lista której zadaniem jest przechowywanie do
                 _, predicted = torch.max(outputs, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
-<<<<<<< HEAD
 ```
 for model_name in model names - Pętla na podstawie nazwy modelu wczytuję odpowiedni przetrenowany model.
+
 model.eval() - Przełączanie modelu w tryb walidacji.
+
 Wewnątrz bloku  with torch.no_grad() znajduję się pętla która służy do walidacji modelu na zestawie danych. Blok torch.no_grad() wyłącza obliczanie gradientów, w skutku czego operacje są szybsze. Pętla przetwarza dane z val_loader, gdzie pobierane są partie obrazów oraz odpowiadające im etykiety. Następnie model dokonuje predykcji dla obrazów z bieżącej partii, po czym wyniki są analizowane w celu określenia czy model poprawnie rozpoznał oczekiwany obiekt.
