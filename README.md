@@ -49,6 +49,21 @@ dataset/
 
         └── ...   
 
+## Użyte biblioteki:
+PyTorch – Umożliwia implementację modeli sieci neuronowych, przeprowadzanie treningu oraz wykonywanie obliczeń numerycznych na danych.
+
+Torchvision – Zawiera przetrenowane modele, zestawy danych oraz narzędzia do przetwarzania i transformacji obrazów, ułatwiające pracę z danymi wizualnymi.
+
+Matplotlib – Służy do wizualizacji wyników modeli, umożliwia wyświetlanie obrazów oraz oznaczanie wykrytych obiektów na grafice.
+
+PIL (Pillow) – Biblioteka do obsługi obrazów, obejmująca ich wczytywanie, wstępne przetwarzanie oraz konwersję do formatu tensorów kompatybilnych z PyTorch.
+
+Tqdm – Zapewnia czytelne paski postępu podczas wykonywania operacji, takich jak trening modeli lub przetwarzanie dużych zbiorów danych.
+
+Os – Umożliwia operacje na plikach i katalogach, takie jak odnajdywanie plików, odczyt etykiet oraz zarządzanie ścieżkami dostępu.
+
+NumPy – Biblioteka do obliczeń numerycznych, umożliwiająca m.in. przetwarzanie danych, normalizację obrazów oraz konwersję między różnymi formatami danych.
+
 ## Kod programu:
 import os
 import torch
