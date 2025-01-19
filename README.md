@@ -10,36 +10,26 @@ Zebraliśmy zdjęcia oraz informacje o obiektach na nich widocznych, czyli wspó
 dataset/   
 
 │   
-
 ├── images/   
-
 │   ├── train/   
-
 │   │   ├── image1.png   
-
 │   │   ├── image2.png   
-
 │   │   └── ...   
 
+
 │   ├── val/   
-
 │       ├── image341.png   
-
 │       ├── image342.png   
-
 │       └── ...   
 
+
 │   
-
 ├── labels/   
-
   ├── train/   
-
   │  ├── image1.txt   
-
   │  ├── image2.txt   
-
   │  └── ...   
+
 
   ├── val/   
     ├── image341.txt   
