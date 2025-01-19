@@ -61,6 +61,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+#Klasa do ładowania i przetwarzania zbioru danych obrazów
+
 class ImageDataset(torch.utils.data.Dataset):
     def __init__(self, image_dir, label_dir=None, transform=None):
         self.image_dir = image_dir
@@ -69,6 +71,7 @@ class ImageDataset(torch.utils.data.Dataset):
         self.transform = transform
 
     def __len__(self):
+	#Zwraca liczbę obrazów w zbiorze danych
         return len(self.images)
 
     def __getitem__(self, index):
@@ -85,11 +88,13 @@ class ImageDataset(torch.utils.data.Dataset):
                     label = labels[0]
             else:
                 print(f"Brak etykiety dla obrazu {self.images[index]}")
-
+	
+	#Zastosowanie transformacji
         if self.transform:
             image = self.transform(image)
 
         return image, label
+#Funkcja do trenowania modelu ResNet18
 def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_rate=0.001):
     model = models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, num_classes)
@@ -104,7 +109,8 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
         running_loss = 0.0
         correct_train = 0
         total_train = 0
-
+	
+	#Pętla po partiach danych
         loop = tqdm(train_loader, leave=True)
         for images, labels in loop:
             images, labels = images.to(device), labels.clone().detach().to(device)
@@ -129,6 +135,7 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
         print(f"  Dokładność (train): {train_accuracy:.2f}%")
         print("---")
 
+    #Walidacja modelu
     model.eval()
     correct = 0
     total = 0
@@ -146,7 +153,7 @@ def train_model(train_loader, val_loader, num_classes=2, num_epochs=5, learning_
 
     return model
 
-
+#Funkcja do wizualizacji obrazów z przewidywaniami, etykietami i polami ograniczającymi
 def plot_image(images, predictions, labels, confidences, class_names, label_files):
     fig, axs = plt.subplots(1, len(images), figsize=(10, 5))
     for i, ax in enumerate(axs):
@@ -189,6 +196,7 @@ def plot_image(images, predictions, labels, confidences, class_names, label_file
     plt.tight_layout()
     plt.show()
 
+#Funkcja walidująca model i wyświetlająca poprawne przewidywania
 def validate_and_display(val_loader, model, class_names):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
@@ -203,6 +211,7 @@ def validate_and_display(val_loader, model, class_names):
             probabilities = torch.nn.functional.softmax(outputs, dim=1)
             confidences_batch, predicted = torch.max(probabilities, 1)
 
+	    #Zbieranie poprawnych przykładów
             for i, (img, pred, label, confidence) in enumerate(zip(images, predicted, labels, confidences_batch)):
                 if pred == label:
                     label_path = val_loader.dataset.label_dir
@@ -222,7 +231,7 @@ def validate_and_display(val_loader, model, class_names):
     else:
         print("Nie znaleziono wystarczającej liczby poprawnych przykładów.")
 
-
+#Funkcja do walidacji wielu modeli i porównania ich wyników
 def validate_model(val_loader, model_names, num_classes):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     results = []
@@ -255,6 +264,7 @@ def validate_model(val_loader, model_names, num_classes):
         correct = 0
         total = 0
 
+	#Walidacja na zbiorze walidacyjnym
         with torch.no_grad():
             for images, labels in val_loader:
                 images, labels = images.to(device), labels.clone().detach().to(device)
@@ -279,6 +289,7 @@ if __name__ == "__main__":
     label_train_path = os.path.join(base_path, 'labels', 'train')
     label_val_path = os.path.join(base_path, 'labels', 'val')
 
+    #Definicja transformacji dla obrazów
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
@@ -298,15 +309,18 @@ if __name__ == "__main__":
     model_names = ["resnet34", "resnet50", "vgg16", "densenet", "efficientnet_b0"]
     results = validate_model(val_loader, model_names, num_classes=2)
 
+    #Podsumowanie wyników walidacji różnych modeli
     print("\n=== Podsumowanie wyników ===")
     for result in results:
         print(f"Model: {result['model_name']}")
         print(f"  Dokładność: {result['accuracy']:.2f}%")
         print("---")
 
+    #Trenowanie i walidacja modelu ResNet18
     print("\nTrenowanie i walidacja modelu\n")
     print("=== Trening modelu ResNet18 ===")
     trained_model = train_model(train_loader, val_loader, num_classes=2, num_epochs=3)
-
+    
+    #Wizualizacja poprawnych predykcji modelu po treningu
     class_names = ["Human", "Car"]
     validate_and_display(val_loader, trained_model, class_names)
