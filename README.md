@@ -96,11 +96,11 @@ class ImageDataset(torch.utils.data.Dataset):
         return image, label
 ```
 ## Działanie klasy
-\\__init__ - Inicjalizuje ścieżki do folderów, gdzie znajdują się obrazy oraz etykiety.
+\_\_init\_\_ - Inicjalizuje ścieżki do folderów, gdzie znajdują się obrazy oraz etykiety.
 
-"__len__" - Zwraca liczbę obrazów w zbiorze.
+\_\_len\_\_ - Zwraca liczbę obrazów w zbiorze.
 
-"__getitem__" - Wczytuję obraz z podanej ścieżki, konwertuje go do RBB, wczytuję odpowiadającą obrazowi etykietę z rozszerzeniem .txt oraz zwraca przetworzony obraz wraz z odpowiadającą etykietą.
+\_\_getitem\_\_ - Wczytuję obraz z podanej ścieżki, konwertuje go do RBB, wczytuję odpowiadającą obrazowi etykietę z rozszerzeniem .txt oraz zwraca przetworzony obraz wraz z odpowiadającą etykietą.
 
 # Transformacja danych 
 transform = transforms.Compose([ 
