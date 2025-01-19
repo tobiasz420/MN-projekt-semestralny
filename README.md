@@ -7,47 +7,7 @@ Zebraliśmy zdjęcia oraz informacje o obiektach na nich widocznych, czyli wspó
 https://drive.google.com/drive/folders/1Q753o4HSwhU-J6FX0UaYMG7VkS2Qu8Vp?usp=sharing
 
 ## Struktura folderu dataset
-dataset/   
-
-│   
-
-├── images/   
-
-│   ├── train/   
-
-│   │   ├── image1.png   
-
-│   │   ├── image2.png   
-
-│   │   └── ...   
-
-│   ├── val/   
-
-│       ├── image341.png   
-
-│       ├── image342.png   
-
-│       └── ...   
-
-│   
-
-├── labels/   
-
-    ├── train/   
-
-    │   ├── image1.txt   
-
-    │   ├── image2.txt   
-
-    │   └── ...   
-
-    ├── val/   
-
-        ├── image341.txt   
-
-        ├── image342.txt   
-
-        └── ...   
+dataset/ ├── images/ │ ├── train/ │ │ ├── image1.png │ │ ├── image2.png │ │ └── ... │ ├── val/ │ ├── image341.png │ ├── image342.png │ └── ... ├── labels/ ├── train/ │ ├── image1.txt │ ├── image2.txt │ └── ... ├── val/ ├── image341.txt ├── image342.txt └── ...  
 
 ## Użyte biblioteki:
 PyTorch – Umożliwia implementację modeli sieci neuronowych, przeprowadzanie treningu oraz wykonywanie obliczeń numerycznych na danych.
