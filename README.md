@@ -65,7 +65,7 @@ Os – Umożliwia operacje na plikach i katalogach, takie jak odnajdywanie plik�
 NumPy – Biblioteka do obliczeń numerycznych, umożliwiająca m.in. przetwarzanie danych, normalizację obrazów oraz konwersję między różnymi formatami danych.
 
 ## Kod programu:
-' ' 'py
+'''python
 import os
 import torch
 from torch.utils.data import DataLoader
@@ -340,4 +340,4 @@ if __name__ == "__main__":
     #Wizualizacja poprawnych predykcji modelu po treningu
     class_names = ["Human", "Car"]
     validate_and_display(val_loader, trained_model, class_names)
-' ' '
+'''
